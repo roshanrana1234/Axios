@@ -1,0 +1,19 @@
+{
+  "developer": [
+    {
+      "id": 1,
+      "name": "Roshan",
+      "designation": "MERN  Developer"
+    },
+    {
+      "id": 2,
+      "name": "Nidhi",
+      "designation": "React JS Developer"
+    },
+    {
+      "id": 3,
+      "name": "Abhilasha",
+      "designation": "FrontEnd Devleoper"
+    }
+  ]
+}
