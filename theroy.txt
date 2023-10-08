@@ -1,0 +1,330 @@
+const storeUserToken = (value) => {
+    localStorage.setItem('token', value)
+}
+
+const getUserToken = () => {
+    let token = localStorage.getItem("token")
+    return token
+}
+
+const removeUserToken = () => {
+    localStorage.removeItem('token')
+}
+
+export { storeUserToken, getUserToken, removeUserToken }
+
+
+
+import axios from "axios";
+
+const axiosInstance = axios.create({
+  baseURL: "http://localhost:8000/",
+  timeout: 5000,
+  headers: {
+    "Content-Type": "application/json",
+    // Authorization: `Bearer ${localStorage.getItem("token")}`,
+    // Authorization: `Bearer ${token}`
+  },
+  params: {}, // do not remove this, its added to add params later in the config
+});
+
+// axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
+// axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+// axios.interceptors.request.eject(myInterceptor);
+
+// Request Interceptor
+axiosInstance.interceptors.request.use(
+  async (config) => {
+    // Add headers, authentication tokens, or other request modifications here
+
+    // config.headers["Content-Type"] = "application/json";
+    const token = localStorage.getItem("token"); // Assuming you store the token in localStorage
+
+    // config.headers = {
+    //   Authorization: `Bearer ${token}`,
+    //   Accept: "application/json",
+    //   "Content-Type": "application/x-www-form-urlencoded",
+    // };
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      // config.headers["Authorization"] = `Bearer ${token}`;
+      // config.headers['Authorization'] = `Bearer ${token}`;
+      // config.headers.Authorization = token ? `Bearer ${token}` : "";
+      // config.headers.common.Authorization = `Bearer ${token}`;
+      // config.headers.Authorization = "Bearer " + token;
+    } else {
+      config.headers.Authorization = null;
+    }
+    console.log("This is Config", config);
+    return config;
+  },
+  (error) => {
+    // Handle request errors
+    return Promise.reject(error);
+  }
+);
+
+// Response Interceptor
+axiosInstance.interceptors.response.use(
+  async (response) => {
+    // Handle successful responses
+    if (response.status === 201) {
+      console.log("Posted Successfully");
+    }
+    return response.data;
+  },
+  (error) => {
+    // Handle response errors
+    if (error.response) {
+      console.error("HTTP error:", error.response.status, error.response.data);
+    } else if (error.request) {
+      console.error("Network error:", error.request);
+    } else {
+      console.error("Request error:", error.message);
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default axiosInstance;
+
+// import axios from 'axios'
+// const axiosInstance = axios.create({
+//   baseURL: 'http://api.example.com', // Replace with your API base URL
+// });
+
+// // Request interceptor
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     // Modify the request config here (e.g., add headers, authentication tokens)
+//         const accessToken = JSON.parse(localStorage.getItem("token"));
+
+//     // ** If token is present add it to request's Authorization Header
+//     if (accessToken) {
+//       if (config.headers) config.headers.token = accessToken;
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     // Handle request errors here
+
+//     return Promise.reject(error);
+//   }
+// );
+
+// // Response interceptor
+// axiosInstance.interceptors.response.use(
+//   (response) => {
+//     // Modify the response data here (e.g., parse, transform)
+
+//     return response;
+//   },
+//   (error) => {
+//     // Handle response errors here
+
+//     return Promise.reject(error);
+//   }
+// );
+
+// export default axiosInstance;;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// config => {
+//   const token = localStorageService.getAccessToken()
+//   if (token) {
+//     config.headers['Authorization'] = 'Bearer ' + token
+//   }
+//   // config.headers['Content-Type'] = 'application/json';
+//   return config
+// },
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// async (config) => {
+//   const token = # Your token goes over here;
+//   if (token) {
+//     config.headers.accessToken = token;
+//   }
+//   return config;
+// },
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// (config) => {
+//   const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// },
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// (config) => {
+//   const token = localStorage.getItem("token");
+//   if (token) {
+//     config.headers["Authorization"] = "Bearer " + token;
+//   }
+// }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// (config) => {
+//   const token =  "Your Token here"
+//   return {
+//     ...config,
+//     headers: {
+//       ...(token !== null && { Authorization: `${token}` }),
+//       ...config.headers,
+//     },
+//   };
+// },
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// (config) => {
+//   const token = localStorage.getItem('token');
+//   if (token) {
+//     config.headers['Authorization'] = `Bearer ${token}`;
+//   }
+//   return config;
+// },
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// config => {
+//   const token = localStorage.getItem('auth_token');
+//   if (token) {
+//       config.headers['Authorization'] = 'Bearer ' + token;
+//   }
+//   config.headers['Content-Type'] = 'application/json';
+//   return config;
+// },
+
+// Error///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// (error) => {
+//   // Handle errors here
+//   if (error.response) {
+//     // The request was made, and the server responded with a status code
+//     console.error('Status Code:', error.response.status);
+//     console.error('Response Data:', error.response.data);
+
+//     // You can customize error handling based on status codes
+//     if (error.response.status === 401) {
+//       // Handle unauthorized access (e.g., redirect to login page)
+//     } else if (error.response.status === 404) {
+//       // Handle resource not found
+//     } else {
+//       // Handle other status codes as needed
+//     }
+//   } else if (error.request) {
+//     // The request was made, but no response was received
+//     console.error('Request Error:', error.request);
+//   } else {
+//     // Something else happened while setting up the request
+//     console.error('Error:', error.message);
+//   }
+
+//   // You can choose to re-throw the error if needed
+//   return Promise.reject(error);
+// }
+/////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Response INterCeptor
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// axios.interceptors.response.use((response) => { // block to handle success case
+//   return response
+// }, function (error) { // block to handle error case
+//   const originalRequest = error.config;
+
+//   if (error.response.status === 401 && originalRequest.url ===
+// 'http://dummydomain.com/auth/token') { // Added this condition to avoid infinite loop
+//       // Redirect to any unauthorised route to avoid infinite loop...
+//       return Promise.reject(error);
+//   }
+
+//   if (error.response.status === 401 && !originalRequest._retry) { // Code inside this block will refresh the auth token
+
+//       originalRequest._retry = true;
+//       const refreshToken = 'xxxxxxxxxx'; // Write the  logic  or call here the function which is having the login to refresh the token.
+//       return axios.post('/auth/token',
+//           {
+//               "refresh_token": refreshToken
+//           })
+//           .then(res => {
+//               if (res.status === 201) {
+//                   localStorage.setItem('auth_token',res.data);
+//                   axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('auth_token');
+//                   return axios(originalRequest);
+//               }
+//           })
+//   }
+//   return Promise.reject(error);
+// });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Add a request interceptor
+// axios.interceptors.request.use(function (config) {
+//   // Do something before request is sent
+//   return config;
+// }, function (error) {
+//   // Do something with request error
+//   return Promise.reject(error);
+// });
+
+// // Add a response interceptor
+// axios.interceptors.response.use(function (response) {
+//   // Any status code that lie within the range of 2xx cause this function to trigger
+//   // Do something with response data
+//   return response;
+// }, function (error) {
+//   // Any status codes that falls outside the range of 2xx cause this function to trigger
+//   // Do something with response error
+//   return Promise.reject(error);
+// });
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// chatGPT
+// const axios = require('axios');
+
+// // Create a new Axios instance
+// const axiosInstance = axios.create();
+
+// // Add an interceptor to the Axios instance
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     // Get your Bearer Token from wherever it's stored (e.g., localStorage, Vuex, etc.)
+//     const token = getToken();
+
+//     // If a token exists, add it to the request headers
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
+// // Function to get the Bearer Token (replace this with your own logic)
+// function getToken() {
+//   return localStorage.getItem('token'); // Example using localStorage
+// }
+
+// // Now you can use the axiosInstance for your API requests
+// axiosInstance.get('https://api.example.com/data')
+//   .then((response) => {
+//     console.log(response.data);
+//   })
+//   .catch((error) => {
+//     console.error(error);
+//   });
+// In the code above:
+
+// We create a new Axios instance using axios.create().
+// We add an interceptor using axiosInstance.interceptors.request.use(). This interceptor is called before every HTTP request is sent.
+// In the interceptor function, we retrieve the Bearer Token from wherever it's stored (e.g., localStorage) using the getToken() function.
+// If a token exists, we add it to the Authorization header of the request with the format "Bearer <token>".
+// Now, when you use axiosInstance to make API requests, the Bearer Token will be automatically added to the request headers. Make sure to replace getToken() with your own logic for retrieving the token based on your authentication mechanism.

@@ -1,0 +1,32 @@
+Axios :- library (Create , Read , Update , Delete)
+.env File
+
+Solidity Block Chain :-
+
+Register (User) => Email , Password , name ...
+xyx@123Xyz
+
+algorithum ()
+key = slfjlfjd23ljlj2j32j32kljlskjdkl34j2lk3jkl23j
+
+ljjdfljfl;jaslj4l5jlkj54l;jl;j4l;j5kl;jl;34kj545dcfljsdfsdjhg4jhg4jhg4jhggg
+
+
+.envFile:- A .env file, short for "environment file," is a plaintext configuration file commonly used in software development to store environment variables. Environment variables are key-value pairs that can be accessed by software applications running on a computer or server. These variables are used to configure various aspects of the application, such as database connection settings, API keys, and other configuration parameters.
+
+// localstorage :-localStorage is a web storage technology provided by web browsers that allows you to store key-value pairs in a user's web browser with no expiration time.
+
+key : value 
+
+key = "token" 
+value = "fyidfoduofiuiofu3u234iou34uo234ujk423h4jk234h3k"
+
+Register  : (password, userName) Created
+userName , password (POST)
+Response (token : dsddas8d08d0ad908adad80d0809sd908as90d8890ad9)
+localStorage.setItem("Auth_Token", token)
+
+Axios : Axios is a promise-based HTTP Client for node.js and the browser
+
+
+Formik , Tanstack Query 
